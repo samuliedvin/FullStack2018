@@ -3,16 +3,26 @@ import './App.css';
 
 const Statistic = ({name, vote}) => <div>{name} {vote}</div>
 
-const Statistics = ({votes}) => (
-  <div>
-    <h1>statistiikka</h1>
-    <Statistic name = 'hyvä' vote = {votes.good} />
-    <Statistic name = 'neutraali' vote = {votes.neutral} />
-    <Statistic name = 'huono' vote = {votes.bad} />
-    <Statistic name = 'keskiarvo' vote = {votes.average} />
-    <Statistic name = 'positiivisia' vote = {votes.positive} />
-  </div>
-)
+const Statistics = ({votes}) => {
+  if(votes.good + votes.neutral + votes.bad === 0) {
+    return (
+      <div>
+        <h1>Statistiikka</h1>
+        <p>Ei yhtään palautetta annettu</p>
+      </div>)
+  } else {
+      return(
+      <div>
+        <h1>statistiikka</h1>
+        <Statistic name = 'hyvä' vote = {votes.good} />
+        <Statistic name = 'neutraali' vote = {votes.neutral} />
+        <Statistic name = 'huono' vote = {votes.bad} />
+        <Statistic name = 'keskiarvo' vote = {votes.average} />
+        <Statistic name = 'positiivisia' vote = {votes.positive} />
+      </div>
+      )  
+  } 
+}
 
 const Button = ({handleClick, name}) => <button onClick={handleClick}>{name}</button>
 
@@ -28,14 +38,8 @@ class App extends Component {
     }
   }
 
-  goodClick = () => {
-    this.setState({ good : this.state.good + 1}, () => this.setAverage()) 
-  }
-  neutralClick = () => {
-    this.setState({ neutral : this.state.neutral + 1}, () => this.setAverage()) 
-  }
-  badClick = () => {
-    this.setState({ bad : this.state.bad + 1}, () => this.setAverage()) 
+  handleClick = (name) => () => {
+      this.setState({ [name] : this.state[name] + 1}, () => this.setAverage()) 
   }
 
   setAverage = () => {
@@ -49,9 +53,9 @@ class App extends Component {
     return (
       <div>
         <h1>anna palautetta</h1>
-        <Button handleClick={this.goodClick} name = 'hyvä' /> 
-        <Button handleClick={this.neutralClick} name = 'neutraali' /> 
-        <Button handleClick={this.badClick} name = 'huono' />
+        <Button handleClick={this.handleClick('good')} name = 'hyvä' /> 
+        <Button handleClick={this.handleClick('neutral')} name = 'neutraali' /> 
+        <Button handleClick={this.handleClick('bad')} name = 'huono' />
         <Statistics votes = {this.state} />
       </div>
     );
