@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
-const Statistic = ({name, vote}) => <div>{name} {vote}</div>
+const Statistic = ({name, vote}) => <tr><td>{name}</td><td> {vote}</td></tr>
 
 const Statistics = ({votes}) => {
   if(votes.good + votes.neutral + votes.bad === 0) {
@@ -14,11 +14,15 @@ const Statistics = ({votes}) => {
       return(
       <div>
         <h1>statistiikka</h1>
-        <Statistic name = 'hyvä' vote = {votes.good} />
-        <Statistic name = 'neutraali' vote = {votes.neutral} />
-        <Statistic name = 'huono' vote = {votes.bad} />
-        <Statistic name = 'keskiarvo' vote = {votes.average} />
-        <Statistic name = 'positiivisia' vote = {votes.positive} />
+        <table>
+          <tbody>
+            <Statistic name = 'hyvä' vote = {votes.good} />
+            <Statistic name = 'neutraali' vote = {votes.neutral} />
+            <Statistic name = 'huono' vote = {votes.bad} />
+            <Statistic name = 'keskiarvo' vote = {votes.average} />
+            <Statistic name = 'positiivisia' vote = {votes.positive} />
+          </tbody>
+        </table>
       </div>
       )  
   } 
