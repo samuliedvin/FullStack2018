@@ -1,6 +1,7 @@
 import React from 'react'
 import Filter from './components/Filter'
 import Entry from './components/Entry'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 
@@ -12,7 +13,8 @@ class App extends React.Component {
         persons: [],
         newName: '',
         newNumber: '',
-        filter: ''
+        filter: '',
+        error: null
         }
     }
 
@@ -42,7 +44,14 @@ class App extends React.Component {
                         persons: this.state.persons.concat(person),
                         newNote: ''
                     })
+                    this.setState({
+                        error: 'puhelinnumero lisätty onnistuneesti',
+                      })
+                    setTimeout(() => {
+                        this.setState({error: null})
+                    }, 2000)
                 })
+
         } else {
             if(window.confirm("Nimelle on jo tallennettu numero, haluatko päivittää sen?")) {
                 let id = this.state.persons.find(person => person.name === this.state.newName).id
@@ -55,11 +64,36 @@ class App extends React.Component {
                                 // this needed to be done, becuse my search works like that :P
                                 persons.forEach(person => person.matchSearch = true) 
                                 this.setState({ persons })
+                                this.setState({
+                                    error: 'puhelinnumero vaihdettu onnistuneesti',
+                                  })
+                                setTimeout(() => {
+                                    this.setState({error: null})
+                                }, 2000)
+                            }
+                        )
+                    })
+                    .catch(error => {
+                        personService
+                            .create(nameObject)
+                            .then(() => {
+                                personService
+                                    .getAll()
+                                    .then(persons => {
+                                        // this needed to be done, becuse my search works like that :P
+                                        persons.forEach(person => person.matchSearch = true) 
+                                        this.setState({ persons })
+                                        this.setState({
+                                            error: 'puhelinnumero vaihdettu onnistuneesti',
+                                          })
+                                        setTimeout(() => {
+                                            this.setState({error: null})
+                                        }, 2000)
+                                    })
                             })
-                    }
-                )
+                    })
             }
-        }
+        } 
     }
 
     removeEntry = (id) => () => {
@@ -73,6 +107,12 @@ class App extends React.Component {
                             // this needed to be done, becuse my search works like that :P
                             persons.forEach(person => person.matchSearch = true) 
                             this.setState({ persons })
+                            this.setState({
+                                error: 'puhelinnumero poistettu onnistuneesti',
+                              })
+                            setTimeout(() => {
+                                this.setState({error: null})
+                            }, 2000)
                         })
                 } 
             )
@@ -108,6 +148,7 @@ class App extends React.Component {
 
         return (
         <div>
+            <Notification message={this.state.error}/>
             <h2>Puhelinluettelo</h2>
             
 
