@@ -2,6 +2,8 @@ import React from 'react'
 import axios from 'axios'
 import Filter from './components/Filter'
 import Entry from './components/Entry'
+import personService from './services/persons'
+
 
 
 class App extends React.Component {
@@ -16,13 +18,13 @@ class App extends React.Component {
     }
 
     componentDidMount = () => {
-        axios
-        .get('http://localhost:3001/persons')
-        .then(response => {
-            // this needed to be done, becuse my search works like that :P
-            response.data.forEach(person => person.matchSearch = true) 
-            this.setState({ persons: response.data })
-        })
+        personService
+            .getAll()
+            .then(persons => {
+                // this needed to be done, becuse my search works like that :P
+                persons.forEach(person => person.matchSearch = true) 
+                this.setState({ persons })
+            })
     }
 
     addEntry = (event) => {
@@ -33,11 +35,15 @@ class App extends React.Component {
             number: this.state.newNumber,
             matchSearch: match
         }
-        if(!this.state.persons.find((person) => person.name === this.state.newName)) {
-            const persons = this.state.persons.concat(nameObject)
-            this.setState({
-                persons
-            });
+        if(!this.state.persons.find(person => person.name === this.state.newName)) {
+            personService
+                .create(nameObject)
+                .then(person => {
+                    this.setState({
+                        persons: this.state.persons.concat(person),
+                        newNote: ''
+                    })
+                })
         } else {
             alert("Nimi on jo puhelinluettelossa.");
         }
