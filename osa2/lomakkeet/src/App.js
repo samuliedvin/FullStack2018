@@ -1,5 +1,4 @@
 import React from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import Entry from './components/Entry'
 import personService from './services/persons'
@@ -45,7 +44,38 @@ class App extends React.Component {
                     })
                 })
         } else {
-            alert("Nimi on jo puhelinluettelossa.");
+            if(window.confirm("Nimelle on jo tallennettu numero, haluatko päivittää sen?")) {
+                let id = this.state.persons.find(person => person.name === this.state.newName).id
+                personService
+                    .update(id, nameObject)
+                    .then(() => {
+                        personService
+                            .getAll()
+                            .then(persons => {
+                                // this needed to be done, becuse my search works like that :P
+                                persons.forEach(person => person.matchSearch = true) 
+                                this.setState({ persons })
+                            })
+                    }
+                )
+            }
+        }
+    }
+
+    removeEntry = (id) => () => {
+        if(window.confirm("Haluatko varmasti poistaa numeron?")) {
+            personService
+                .remove(id)
+                .then(() => {
+                    personService
+                        .getAll()
+                        .then(persons => {
+                            // this needed to be done, becuse my search works like that :P
+                            persons.forEach(person => person.matchSearch = true) 
+                            this.setState({ persons })
+                        })
+                } 
+            )
         }
     }
 
@@ -100,7 +130,7 @@ class App extends React.Component {
             <table>
                 <tbody>
                     {personsToShow.map(person => 
-                        <Entry key = {person.name} person = {person} /> 
+                            <Entry key = {person.name} person = {person} removeEntry = {this.removeEntry(person.id)} /> 
                     )
                 }
                 </tbody>
