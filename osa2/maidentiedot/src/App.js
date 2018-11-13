@@ -34,6 +34,15 @@ class App extends Component {
     }
     this.setState({countries})
   }
+
+  showClickedCountry = (event) => {
+    this.setState({filter: event.target.textContent})
+    let countries = [...this.state.countries]
+    countries.forEach(country => {
+            country.matchSearch = (country.name.toLowerCase().indexOf(event.target.textContent.toLowerCase()) !== -1)
+    })
+    this.setState({countries})
+  }
   
   render() {
     let countriesToShow = this.state.countries.filter(country => country.matchSearch)
@@ -55,12 +64,12 @@ class App extends Component {
       Results = () => (
         countriesToShow.map(country => {
           return(
-            <p key={country.numericCode}>{country.name}</p>
+            <p key={country.numericCode} onClick={this.showClickedCountry}>{country.name}</p>
           )
         })
       )
     }
-    
+
     return (
     <div>
       <div>
