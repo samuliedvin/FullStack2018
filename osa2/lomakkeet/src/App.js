@@ -1,23 +1,28 @@
-import React from 'react';
-import Filter from './components/Filter';
-import Entry from './components/Entry';
+import React from 'react'
+import axios from 'axios'
+import Filter from './components/Filter'
+import Entry from './components/Entry'
 
 
 class App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-        persons: [
-            { 
-                name: 'Arto Hellas',
-                number: '0303030303',
-                matchSearch: true 
-            }
-        ],
+        persons: [],
         newName: '',
         newNumber: '',
         filter: ''
         }
+    }
+
+    componentDidMount = () => {
+        axios
+        .get('http://localhost:3001/persons')
+        .then(response => {
+            // this needed to be done, becuse my search works like that :P
+            response.data.forEach(person => person.matchSearch = true) 
+            this.setState({ persons: response.data })
+        })
     }
 
     addEntry = (event) => {
