@@ -1,4 +1,7 @@
 import React from 'react';
+import Filter from './components/Filter';
+import Entry from './components/Entry';
+
 
 class App extends React.Component {
     constructor(props) {
@@ -67,9 +70,7 @@ class App extends React.Component {
             <h2>Puhelinluettelo</h2>
             
 
-            <div>
-                rajaa näytettäviä: <input value = {this.state.filter} onChange={this.handleFilterChange} />
-            </div>
+            <Filter filter={this.state.filter} handleFilterChange = {this.handleFilterChange} /> 
 
             <h2>Lisää uusi</h2>
 
@@ -88,10 +89,8 @@ class App extends React.Component {
             <table>
                 <tbody>
                     {personsToShow.map(person => 
-                    <tr key={person.name}>
-                        <td>{person.name}</td>
-                        <td>{person.number}</td>
-                    </tr>)
+                        <Entry key = {person.name} person = {person} /> 
+                    )
                 }
                 </tbody>
             </table>
