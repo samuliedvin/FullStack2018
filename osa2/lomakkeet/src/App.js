@@ -30,23 +30,22 @@ class App extends React.Component {
 
     addEntry = (event) => {
         event.preventDefault();
-        let match = this.state.newName.toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1 
+        let match = this.state.newName.toLowerCase().indexOf(this.state.filter.toLowerCase()) >= -1 
         const nameObject = {
             name: this.state.newName,
-            number: this.state.newNumber,
-            matchSearch: match
+            number: this.state.newNumber
         }
         if(!this.state.persons.find(person => person.name === this.state.newName)) {
             personService
                 .create(nameObject)
                 .then(person => {
+                    person.matchSearch = match;
                     this.setState({
                         persons: this.state.persons.concat(person),
-                        newNote: ''
-                    })
-                    this.setState({
+                        newName: '',
+                        newNumber: '',
                         error: 'puhelinnumero lisätty onnistuneesti',
-                      })
+                    })
                     setTimeout(() => {
                         this.setState({error: null})
                     }, 2000)
